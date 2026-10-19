@@ -8,19 +8,19 @@ diamonds = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
 userHand1=[]
 dealerHand=[]
 
-def starterQuestion():
+def starterInitAndQuestion():
     global remainingChips
     remainingChips = 1000
-    global betQuestion
-    betQuestion = 5  # int(input("How many chips do you want to bet?: "))
+    global betAmount
+    betAmount = 5  
     while True:
-        if betQuestion > remainingChips:
+        if betAmount > remainingChips:
             print("Try again. You can't bet more chips than you have available!")
-        elif betQuestion <= 0:
+        elif betAmount <= 0:
             print("You have to bet at least one chip! Try again:")
         else:
-            print(f"You have placed a bet of {betQuestion} chips. \n")
-            remainingChips = remainingChips - betQuestion
+            print("You have placed a bet of " + str(betAmount) + " chips.\n")
+            remainingChips = remainingChips - betAmount
             break
 
 def userDealHand():
@@ -38,11 +38,17 @@ def userDealHand():
         else:
             cardPull = diamonds.pop(random.randint(0,len(diamonds)-1))
             userHand1.append(cardPull)
-    userHandStr = ", ".join(map(str, userHand1))
+    
+def userHandString(userHand1):
+    handFormatString = ", "
+    userHandStr = handFormatString.join(map(str, userHand1))
+    return userHandStr
 
-
+def userDealtHandResponse():
     print("You have just been dealt a hand!")
-    print("Your hand consists of " + userHandStr + "\n")
+    print("Your hand consists of " + userHandString(userHand1))
+    print()
+
 
 def dealerDealHand():
     for x in range(2):
@@ -59,17 +65,19 @@ def dealerDealHand():
         else:
             cardPull = diamonds.pop(random.randint(0,len(diamonds)-1))
             dealerHand.append(cardPull)
+
+def dealerDealtHandResponse():
     dealerHandStr = str(dealerHand[0])
     print("Dealer deals themself two cards. The card showing is worth " + dealerHandStr)
 
-def handValueCheck(hand):
-    valueNum = 0
-    for value in hand:
-        valueNum += value
-    return valueNum
+def handValueCheck(handList):
+    valueOfHand = 0
+    for value in handList:
+        valueOfHand += value
+    return valueOfHand
 
-def blackJackCheck(hand):
-    if handValueCheck(hand) == 21:
+def blackJackCheck(handList):
+    if handValueCheck(handList) == 21:
         return True
     else:
         return False
@@ -104,14 +112,10 @@ def aceValueChangeCheck(bustChecker, userOrDealer):
 
     if userOrDealer == 0:
         if userHand1.count(11) > 0:
-            isAce = True
-        else:
-            pass
+            isAce = True        
     else:
         if dealerHand.count(11) > 0:
             isAce = True
-        else:
-            pass
 
     if isAce == True and bustChecker == True:
         if userOrDealer == 0:
@@ -120,8 +124,6 @@ def aceValueChangeCheck(bustChecker, userOrDealer):
         else:
             dealerHand.remove(11)
             dealerHand.append(1)
-    else:
-        pass
 
 def hit(handDealer = userHand1):
     user = True
@@ -140,11 +142,11 @@ def hit(handDealer = userHand1):
         cardPull = diamonds.pop(random.randint(0, len(diamonds) - 1))
         handDealer.append(cardPull)
 
-def doubleDown(betQuestion, remainingChips):
-    if betQuestion <= remainingChips:
+def doubleDown(betAmount, remainingChips):
+    if betAmount <= remainingChips:
         print("You doubled down!")
-        remainingChips = remainingChips - betQuestion
-        betQuestion = betQuestion * 2
+        remainingChips = remainingChips - betAmount
+        betAmount = betAmount * 2
         hit()
         return True
     else:
@@ -160,24 +162,31 @@ def split(userHand):
         print("You cannot split! Try another input!")
         pass
 
-def userMove():
+def userMovePrompt():
     print("\nIt is now your move! what would you like to do?")
     print("You can hit, stand, double-down, split, or surrender!")
+    #Remember to *maybe* implement cases here based on possible moves
+    #Have to unless different implementation is possible
+    #Though it seems like it'd be simpler to use cases here....
 
+def userMoveAnswer():
     userWhileBool = True
     while userWhileBool:
         userInput = input("Input H, ST, DD, SP, or SU: ")
         if userInput.upper() == "H":
             print("You decided to hit!")
             hit()
-            bustChecker(handValueCheck, 0)
+            if ((aceValueChangeCheck(bustChecker, 0)) and (bustChecker(handValueCheck, 0))):
+                print("Your hand consists of " + userHandString())
+                print()
+
             userWhileBool = False
         elif userInput.upper() == "ST":
             print("You have decided to stand")
             userWhileBool = False
             bustChecker(handValueCheck, 0)
         elif userInput.upper() == "DD":
-            doubleDown(betQuestion, remainingChips)
+            doubleDown(betAmount, remainingChips)
             userWhileBool = False
         elif userInput.upper() == "SP":
             userWhileBool = False
@@ -186,18 +195,27 @@ def userMove():
         else:
             print("Not a valid option! Try again!")
 
-    if bustChecker(handValueCheck,0) == True:
-        print("You busted!")
-        print("You lost your bet of " + str(betQuestion))
-    else:
-        pass
+def userWin(remainingChips):
+    amountWon = betAmount * 2
+    remainingChips = remainingChips + amountWon
+
+    print("You won this hand of Blackjack, with a bet of " + str(betAmount) + " chips.")
+    print("That means that you won " + str(amountWon) +"chips")
+
 
 def main():
-    starterQuestion()
+    starterInitAndQuestion()
     userDealHand()
+    aceValueChangeCheck(bustChecker, 0)
+    userHandString(userHand1)
+    userDealtHandResponse()
+    if (blackJackCheck(userHand1)):
+        userWin(remainingChips)
+    else:
+        pass 
     dealerDealHand()
-    userMove()
+    dealerDealtHandResponse()
+    userMovePrompt()
+    userMoveAnswer()
 
 main()
-
-
