@@ -200,7 +200,7 @@ def userWin(remainingChips):
     remainingChips = remainingChips + amountWon
 
     print("You won this hand of Blackjack, with a bet of " + str(betAmount) + " chips.")
-    print("That means that you won " + str(amountWon) +"chips")
+    print("That means that you won " + str(amountWon) +" chips")
 
 
 def main():
