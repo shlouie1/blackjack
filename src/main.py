@@ -1,5 +1,7 @@
 import random
 
+#initialze list of cards
+#for now we only have the values that they represent 
 clubs = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
 hearts = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
 spades = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
@@ -8,11 +10,12 @@ diamonds = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
 userHand1=[]
 dealerHand=[]
 
+
 def starterInitAndQuestion():
     global remainingChips
     remainingChips = 1000
     global betAmount
-    betAmount = 5  
+    betAmount = 5 #eventually make this user input, for testing purposes, the value is set to 5  
     while True:
         if betAmount > remainingChips:
             print("Try again. You can't bet more chips than you have available!")
@@ -23,6 +26,7 @@ def starterInitAndQuestion():
             remainingChips = remainingChips - betAmount
             break
 
+#pops two values from the deck and appends to user hand list
 def userDealHand():
     for x in range(2):
         suitPick = random.randint(1, 4)
@@ -38,18 +42,7 @@ def userDealHand():
         else:
             cardPull = diamonds.pop(random.randint(0,len(diamonds)-1))
             userHand1.append(cardPull)
-    
-def userHandString(userHand1):
-    handFormatString = ", "
-    userHandStr = handFormatString.join(map(str, userHand1))
-    return userHandStr
-
-def userDealtHandResponse():
-    print("You have just been dealt a hand!")
-    print("Your hand consists of " + userHandString(userHand1))
-    print()
-
-
+#pops two values from the deck and appends to dealer hand list
 def dealerDealHand():
     for x in range(2):
         suitPick = random.randint(1, 4)
@@ -65,6 +58,17 @@ def dealerDealHand():
         else:
             cardPull = diamonds.pop(random.randint(0,len(diamonds)-1))
             dealerHand.append(cardPull)
+
+#returns string of users hand
+def userHandString(userHand1):
+    handFormatString = ", "
+    userHandStr = handFormatString.join(map(str, userHand1))
+    return userHandStr
+
+def userDealtHandResponse():
+    print("You have just been dealt a hand!")
+    print("Your hand consists of " + userHandString(userHand1))
+    print()
 
 def dealerDealtHandResponse():
     dealerHandStr = str(dealerHand[0])
@@ -82,6 +86,7 @@ def blackJackCheck(handList):
     else:
         return False
 
+#we can work on this function later
 def bustChecker(handValueCheck, userOrDealer):
     user = True
     bust = False
@@ -107,6 +112,7 @@ def bustChecker(handValueCheck, userOrDealer):
     else:
         return bust
 
+#this is great...
 def aceValueChangeCheck(bustChecker, userOrDealer):
     isAce = False
 
