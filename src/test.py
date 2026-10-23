@@ -30,9 +30,8 @@ def starterQuestion(betAmount, remainingChips):
 
 #pops two values from the deck and appends to user hand list
 def userDealHand():
-    userHand1.append(5)
-    userHand1.append(5)
-
+    userHand1.append(2)
+    userHand1.append(2)
 #pops two values from the deck and appends to dealer hand list
 def dealerDealHand():
     for x in range(2):
@@ -151,56 +150,43 @@ def splitMove():
 
     print()
     print(f"Hand 1 consists of {userHandString(userHand1)}")
-    print(f"Hand 2 consists of {userHandString(userHand1)}")
+    print(f"Hand 2 consists of {userHandString(userHand2)}")
 
-#The typical implementation of user inputs here can be found inside the 'userMovePromptAndAnswer' function
-#However most of the 'split' option will be found here
-#Split is the most complicated move so an implementation in the normal function would bloat it too much
-def split(didHit = False):
-    if ((blackJackCheck(userHand1) and blackJackCheck(userHand2))):
-        print("You just capped out at 21 for both hands!")
-        dealerMove(dealerHand, userHand1)
-        dealerMove(dealerHand, userHand1)
+def splitInput(splitHand):
+    if splitHand == userHand1:
+        splitHand = userHand1
+        handNum = 1
     else:
-        handNum = 1 if not(blackJackCheck(userHand1)) else 2
-        userWhileBool1 = True if (handNum == 1) else False
-        userWhileBool2 = True if (handNum == 2) else False
+        splitHand = userHand2
+        handNum = 2
 
-    if (blackJackCheck(userHand1)):
-        print()
-    elif (blackJackCheck(userHand1):
-        
-    else:
-        pass
-    while userWhileBool1:
-        print(f"You are on hand 1. What would you like to do? You can hit, stand, or double down.")
+    userWhileBool = True
+    print(f"You are on hand {handNum}. What would you like to do? You can hit, stand, or double down.")
+    
+    while userWhileBool:
         userInput = input("Input H, ST, or DD: ")
-
-        #user hit
-        if userInput.upper() == "H":
+        if userInput.upper() == "H": #user hit
             print()
             print("You decided to hit!")
-            hit(userHand1)
-
-            if (blackJackCheck(userHand1)): #you got capped out at 21
-                print(f"Your hand consists of {userHandString(userHand1)}")
+            hit(splitHand)
+            if (blackJackCheck(splitHand)): #you got capped out at 21
+                print(f"Your hand consists of {userHandString(splitHand)}")
                 print()
                 print("You capped out at 21!")
-                dealerMove(dealerHand, userHand1)
-            elif (not(bustChecker(handValueCheck, userHand1))): #If you dont bust then ...
-                print(f"Your hand consists of {userHandString(userHand1)}")
+                userWhileBool = False
+            elif (not(bustChecker(handValueCheck, splitHand))): #If you dont bust then ...
+                print(f"Your hand consists of {userHandString(splitHand)}")
                 print()
-                split(True)
+                splitInput(splitHand)
+                userWhileBool = False
             else: #you busted
-                print(f"Your hand consists of {userHandString(userHand1)}... YOU BUSTED!")
-                userLose(betAmount)
-            userWhileBool1 = False
+                print(f"Your hand {handNum} consists of {userHandString(splitHand)}... YOU BUSTED!")
+                userWhileBool = False
 
         elif userInput.upper() == "ST":
             print()
-            print("You have decided to stand")
-            dealerMove(dealerHand, userHand1)
-            userWhileBool1 = False
+            print(f"You have decided to stand on hand {handNum}")
+            userWhileBool = False
 
         #user doubled down
         elif userInput.upper() == "DD" and (not didHit):
@@ -208,85 +194,56 @@ def split(didHit = False):
                 print("You can't afford to double down!")
                 print("Try again!")
                 print()
-            elif (bustChecker(handValueCheck, userHand1)):
-                doubleDownMove(userHand1)
+            elif (bustChecker(handValueCheck, splitHand)):
+                doubleDownMove(splitHand)
                 print("You doubled down!")
                 print()
-                print(f"Your hand consists of {userHandString(userHand1)}")
+                print(f"Your hand consists of {userHandString(splitHand)}")
                 print("You busted!")
-                userLose(betAmount)
-                userWhileBool1 = False
+                userWhileBool = False
             else:
-                doubleDownMove(userHand1)
+                doubleDownMove(splitHand)
                 print("You doubled down!")
                 print()
-                print(f"Your hand consists of {userHandString(userHand1)}")
-                dealerMove(dealerHand)
-                userWhileBool1 = False
+                print(f"Your hand {handNum} consists of {userHandString(splitHand)}... YOU BUSTED!")
+                userWhileBool = False
         else:
             print("Not a valid option! Try again!")
 
-        handNum = 2 if not(blackJackCheck(userHand2)) else 1
-        userWhileBool2 = True if (handNum == 2) else False
+#The typical implementation of user inputs here can be found inside the 'userMovePromptAndAnswer' function
+#However most of the 'split' option will be found here
+#Split is the most complicated move so an implementation in the normal function would bloat it too much
+def split(didHit = False):
+    doneSplitting = False
+    userWhileBool1 = True if not(blackJackCheck(userHand1)) else False
+    userWhileBool2 = True if not(blackJackCheck(userHand2)) else False
+    if (not (userWhileBool1 and userWhileBool2)):
+        print("You just capped out at 21 for both hands!")
+        dealerMove(dealerHand, userHand1)
+        dealerMove(dealerHand, userHand1)
+        doneSplitting = True        
 
+    #hand 1
+    while userWhileBool1:
+        splitInput(userHand1)
+        userWhileBool1 = False
+       
+    #hand 2
+    while userWhileBool2:
+        splitInput(userHand2)
+        userWhileBool2 = False
+        
+    if (not doneSplitting): #unless they capped out at 21 for both hands then...
+        doneSplitting = True
         print()
-        while userWhileBool2:
-            print(f"Hand 2 consists of {userHandString[userHand2]}")
-            print(f"You are on hand 2. What would you like to do? You can hit, stand, or double down.")
-            userInput = input("Input H, ST, or DD: ")
-            #user hit
-            if userInput.upper() == "H":
-                print()
-                print("You decided to hit!")
-                hit(userHand1)
-
-                if (blackJackCheck(userHand2)): #you got black jack
-                    print(f"Your hand consists of {userHandString(userHand2)}")
-                    print()
-                    print("You capped out at 21!")
-                    dealerMove(dealerHand, userHand1)
-                    userWhileBool2 = False
-                elif (not(bustChecker(handValueCheck, userHand2))): #If you dont bust then ...
-                    print(f"Your hand consists of {userHandString(userHand1)}")
-                    print()
-                    userWhileBool2 = False
-                    split(True)
-                else: #you busted
-                    print(f"Your hand consists of {userHandString(userHand2)}... YOU BUSTED!")
-                    userLose(betAmount)
-                    userWhileBool2 = False
-                    
-            elif userInput.upper() == "ST":
-                print()
-                print("You have decided to stand")
-                dealerMove(dealerHand, userHand2)
-                userWhileBool2 = False
-
-            #user doubled down
-            elif userInput.upper() == "DD" and (not didHit):
-                if (doubleDownOrSplitPossible(betAmount, remainingChips) == False):
-                    print("You can't afford to double down!")
-                    print("Try again!")
-                    print()
-                elif (bustChecker(handValueCheck, userHand2)):
-                    doubleDownMove(userHand2)
-                    print("You doubled down!")
-                    print()
-                    print(f"Your hand consists of {userHandString(userHand2)}")
-                    print("You busted!")
-                    userLose(betAmount)
-                    userWhileBool2 = False
-                else:
-                    doubleDownMove(userHand2)
-                    print("You doubled down!")
-                    print()
-                    print(f"Your hand consists of {userHandString(userHand2)}")
-                    dealerMove(dealerHand)
-                    userWhileBool2 = False
-            else:
-                print("Not a valid option! Try again!")
-
-
+        print("You have concluded your split hands!")
+        print(f"Hand one consists of {userHandString(userHand1)}")
+        print(f"Hand two consists of {userHandString(userHand2)}")
+        print ("For hand one...", end = "")
+        dealerMove(dealerHand, userHand1)
+        print()
+        print ("For hand two...", end = "")
+        dealerMove(dealerHand, userHand2, True)
 #results
 def userWin(remainingChips, betAmount, isBlackJack):
     if (isBlackJack):
@@ -314,11 +271,13 @@ def push(dealerHand, userHand):
         return pushBool
     else:
         return pushBool
-
-        
+   
 #what the dealer does after you are done with your hand
-def dealerMove(dealerHand, userHand):
-    print(f"Dealer reveals his second card... it is worth {dealerHand[1]}")
+def dealerMove(dealerHand, userHand, doneRevealing = False):
+    if doneRevealing:
+        pass
+    else:
+        print(f"Dealer reveals his second card... it is worth {dealerHand[1]}")
 
     while ((handValueCheck(dealerHand) < 17)):
         count = 2
@@ -412,7 +371,7 @@ def userMovePromptAndAnswer(didHit = False):
                 userWhileBool = False
 
         #user split
-        elif userInput.upper() == "SP":
+        elif (userInput.upper() == "SP" and (not didHit)):
             if (splitPossible(userHand1)):
                 splitMove()
                 split()
