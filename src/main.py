@@ -13,12 +13,15 @@ userHand2 = []
 dealerHand=[]
 handFormatString = ", "
 
+remainingChips = 1000
+betAmount = 0
+
 
 #by default the chips are removed, so any maninpulation beyond this should keep that in mind
 def starterQuestion():
     global betAmount
     global remainingChips
-    remainingChips = 1000
+    
     
     while True:
         betAmount = int(input("How many chips would you like to bet?: "))
@@ -338,6 +341,12 @@ def dealerMove(dealerHand, userHand, betAmount, doneRevealing = False):
             print("Dealer can draw no more cards! You beat his hand")
             userWin(remainingChips, betAmount, False)
 
+def surrender(remainingChips):
+    userLose(betAmount);
+    surrenderBet = ceil(betAmount / 2)
+    remainingChips += surrenderBet
+
+    return surrenderBet
 
 #prompts user and accepts answers
 #basically the parent function for user input
@@ -423,10 +432,25 @@ def userMovePromptAndAnswer(didHit = False):
 
         #user surrendered
         elif userInput.upper() == "SU" and (not didHit):
+            print()
+            print("You chose to surrender and lose this hand!")
+            print("You get half your chips back!")
+            print()
+            print(f"But get back {surrender(remainingChips)}")
+
             userContinue = False
         else:
             print("Not a valid option! Try again!")
 
+def continuePrompt():
+    print()
+    print("Would you like play another game of Blackjack?: ")
+    response = input("Y for yes, else for no")
+
+    if response.upper() == "Y":
+        return True
+    else:
+        return False
 
 def main():
     starterQuestion()
@@ -441,4 +465,9 @@ def main():
         dealerDealtHandOutput()
         userMovePromptAndAnswer()
 
+    if continuePrompt():
+        main()
+
 main()
+
+
