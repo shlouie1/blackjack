@@ -3,14 +3,15 @@ from math import ceil
 
 #initialze list of cards
 #for now, only have the values that they represent 
-clubs = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
-hearts = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
-spades = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+clubs =    [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+hearts =   [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+spades =   [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
 diamonds = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
 
-userHand1=[]
+
+userHand1 = []
 userHand2 = []
-dealerHand=[]
+dealerHand= []
 handFormatString = ", "
 
 remainingChips = 1000
@@ -21,7 +22,6 @@ betAmount = 0
 def starterQuestion():
     global betAmount
     global remainingChips
-    
     
     while True:
         betAmount = int(input("How many chips would you like to bet?: "))
@@ -43,13 +43,13 @@ def userDealHand():
             cardPull = clubs.pop(random.randint(0, len(clubs)-1))
             userHand1.append(cardPull)
         elif suitOfCardSelect == 2:
-            cardPull = hearts.pop(random.randint(0,len(hearts)-1))
+            cardPull = hearts.pop(random.randint(0, len(hearts)-1))
             userHand1.append(cardPull)
         elif suitOfCardSelect == 3:
-            cardPull = spades.pop(random.randint(0,len(spades)-1))
+            cardPull = spades.pop(random.randint(0, len(spades)-1))
             userHand1.append(cardPull)
         else:
-            cardPull = diamonds.pop(random.randint(0,len(diamonds)-1))
+            cardPull = diamonds.pop(random.randint(0, len(diamonds)-1))
             userHand1.append(cardPull)
 
 #pops two values from the deck and appends to dealer hand list
@@ -57,16 +57,16 @@ def dealerDealHand():
     for x in range(2):
         suitOfCardSelect = random.randint(1, 4)
         if suitOfCardSelect == 1:
-            cardPull = clubs.pop(random.randint(0,len(clubs)-1))
+            cardPull = clubs.pop(random.randint(0, len(clubs)-1))
             dealerHand.append(cardPull)
         elif suitOfCardSelect == 2:
-            cardPull = hearts.pop(random.randint(0,len(hearts)-1))
+            cardPull = hearts.pop(random.randint(0, len(hearts)-1))
             dealerHand.append(cardPull)
         elif suitOfCardSelect == 3:
-            cardPull = spades.pop(random.randint(0,len(spades)-1))
+            cardPull = spades.pop(random.randint(0, len(spades)-1))
             dealerHand.append(cardPull)
         else:
-            cardPull = diamonds.pop(random.randint(0,len(diamonds)-1))
+            cardPull = diamonds.pop(random.randint(0, len(diamonds)-1))
             dealerHand.append(cardPull)
 
 #returns string of users hand
@@ -171,7 +171,7 @@ def splitPossible(userHand1):
     if (doubleDownOrSplitPossible(betAmount, remainingChips) and userHand1[0] == userHand1[1]):
         return True
     else:
-        return false
+        return False
 
 #Splits hand
 def splitMove():
@@ -452,6 +452,24 @@ def continuePrompt():
     else:
         return False
 
+def reinitialize():
+        global clubs
+        global hearts
+        global spades
+        global diamonds
+
+        clubs =    [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+        hearts =   [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+        spades =   [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+        diamonds = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+
+        global userHand1
+        global userHand2
+        global dealerHand
+        userHand1 = []
+        userHand2 = []
+        dealerHand= []
+        
 def main():
     starterQuestion()
     userDealHand()
@@ -466,6 +484,7 @@ def main():
         userMovePromptAndAnswer()
 
     if continuePrompt():
+        reinitialize()
         main()
 
 main()
