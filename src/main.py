@@ -22,8 +22,14 @@ betAmount = 0
 def starterQuestion():
     global betAmount
     global remainingChips
+
+    if remainingChips == 0:
+        broke = True
+    else:
+        broke = False
     
-    while True:
+    while not broke:
+        print(f"You have {remainingChips} chips left!")
         betAmount = int(input("How many chips would you like to bet?: "))
         if betAmount > remainingChips:
             print("Try again. You can't bet more chips than you have available!")
@@ -34,6 +40,7 @@ def starterQuestion():
             print()
             remainingChips = remainingChips - betAmount
             break
+
 
 #pops two values from the deck and appends to user hand list
 def userDealHand():
@@ -281,16 +288,18 @@ def split(betAmount):
         dealerMove(dealerHand, userHand2, betAmount2, True)
 
 #results sections
-def userWin(remainingChips, betAmount, isBlackJack):
-    if (isBlackJack):
+def userWin(betAmount, isBlackJack):
+    global remainingChips
+    if isBlackJack:
         amountWon = betAmount * 3
-        remainingChips = remainingChips + amountWon
+        remainingChips += amountWon
     else:
         amountWon = betAmount * 2
-        remainingChips = remainingChips + amountWon
+        remainingChips += amountWon
 
     print(f"You won this hand of Blackjack, with a bet of {betAmount} chips")
     print(f"That means that you won {ceil(amountWon / 2)} chips")
+
 
 def userLose(betAmount):
     print(f"You lost with a bet of {betAmount}")
@@ -312,13 +321,15 @@ def push(dealerHand, userHand):
    
 #what the dealer does after you are done with your hand
 def dealerMove(dealerHand, userHand, betAmount, doneRevealing = False):
+
     if doneRevealing:
         pass
     else:
         print(f"Dealer reveals his second card... it is worth {dealerHand[1]}")
 
+    count = 2
     while ((handValueCheck(dealerHand) < 17)):
-        count = 2
+        
         hit(dealerHand)
         count += 1
         print(f"Dealer reveals card number {count}, it is a {dealerHand[count - 1]}")
@@ -328,7 +339,7 @@ def dealerMove(dealerHand, userHand, betAmount, doneRevealing = False):
 
     if (bustChecker(dealerHand)): #dealer busts
         print(f"Dealer has busted with a hand of {dealerHandStr}")
-        userWin(remainingChips, betAmount, False)
+        userWin(betAmount, False)
     else: #dealer doesnt bust
         dealerWon = dealerWonOrNot(dealerHand, userHand1)
         if dealerWon: #dealer outdid you
@@ -339,7 +350,7 @@ def dealerMove(dealerHand, userHand, betAmount, doneRevealing = False):
             print("You and the dealer tied this hand. You keep your chips.")
         else: #dealer had to stand on 17+
             print("Dealer can draw no more cards! You beat his hand")
-            userWin(remainingChips, betAmount, False)
+            userWin(betAmount, False)
 
 def surrender(remainingChips):
     userLose(betAmount);
@@ -445,7 +456,7 @@ def userMovePromptAndAnswer(didHit = False):
 def continuePrompt():
     print()
     print("Would you like play another game of Blackjack?: ")
-    response = input("Y for yes, else for no")
+    response = input("Y for yes, else for no: ")
 
     if response.upper() == "Y":
         return True
@@ -477,7 +488,7 @@ def main():
     handString(userHand1)
     userDealtHandOutput()
     if (blackJackCheck(userHand1)):
-        userWin(remainingChips, betAmount, True)
+        userWin(betAmount, True)
     else:
         dealerDealHand()
         dealerDealtHandOutput()
