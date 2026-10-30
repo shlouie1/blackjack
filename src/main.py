@@ -362,7 +362,6 @@ def surrender(remainingChips):
 #prompts user and accepts answers
 #basically the parent function for user input
 def userMovePromptAndAnswer(didHit = False):
-    userContinue = True
     #prompt that checks whether or not they hit
     #they shouldn't be able to do some things if they already hit!!
     if didHit:
@@ -377,7 +376,6 @@ def userMovePromptAndAnswer(didHit = False):
     userContinue = True
 
     while userContinue:
-
         userInput = input("Input H, ST, DD, SP, or SU: ")
 
         if userInput.upper() == "H":  #user hit
@@ -463,23 +461,18 @@ def continuePrompt():
     else:
         return False
 
+#shallow copy to re init
+#probably a better implementatin...
 def reinitialize():
-        global clubs
-        global hearts
-        global spades
-        global diamonds
 
-        clubs =    [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
-        hearts =   [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
-        spades =   [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
-        diamonds = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+        clubs[:] =    [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+        hearts[:] =   [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+        spades[:] =   [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
+        diamonds[:] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11]
 
-        global userHand1
-        global userHand2
-        global dealerHand
-        userHand1 = []
-        userHand2 = []
-        dealerHand= []
+        userHand1[:]  = []
+        userHand2[:]  = []
+        dealerHand[:] = []
         
 def main():
     starterQuestion()
@@ -494,10 +487,9 @@ def main():
         dealerDealtHandOutput()
         userMovePromptAndAnswer()
 
-    if continuePrompt():
+    willContinue = continuePrompt()
+    if willContinue:
         reinitialize()
         main()
 
 main()
-
-
